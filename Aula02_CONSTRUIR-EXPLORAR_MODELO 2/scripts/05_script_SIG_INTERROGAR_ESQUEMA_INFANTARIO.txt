@@ -38,7 +38,7 @@ SELECT ST_AsText(g_cliente) FROM Cliente
 
 -- cada uma das coordenadas (ordenadas e abcissa) do ponto geogr�fico de cada cliente (6.b)
 
-SELECT ST_X(g_cliente) AS abcissa, ST_Y(geometry) AS ordenada FROM Cliente
+SELECT ST_X(g_cliente) AS abcissa, ST_Y(g_cliente) AS ordenada FROM Cliente
 ;
 
 

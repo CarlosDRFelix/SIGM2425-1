@@ -1,7 +1,11 @@
 @ECHO OFF
 :: [PTS: AJUSTAR]
-set psqlPath="C:\myApp\PostgreSQL\10\bin"
 
+ :: path da Sofia
+:: set psqlPath="C:\myApp\PostgreSQL\10\bin"
+
+ :: path do Carlos
+set psqlPath="C:\Program Files\PostgreSQL\16\bin"
 
 :: Base de Dados, nome do utilizador e porto
 SET dataBase=postgres

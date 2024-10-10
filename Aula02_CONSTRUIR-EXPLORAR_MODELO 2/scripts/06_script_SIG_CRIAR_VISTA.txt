@@ -50,9 +50,11 @@ FROM
     Filho f
 INNER JOIN Cliente c ON f.id = c.id
 WHERE
-    f.data_nascimento BETWEEN TO_DATE('01/01/2001', 'DD/MM/YYYY') AND TO_DATE('31/12/2019', 'DD/MM/YYYY');
+    EXTRACT(YEAR FROM AGE(CURRENT_DATE , f.data_nascimento)) BETWEEN  3 AND 18;
+    -- EXTRACT(YEAR FROM AGE(f.data_nascimento)) > 3 || EXTRACT(YEAR FROM AGE(f.data_nascimento)) < 18;
+    -- f.data_nascimento BETWEEN TO_DATE('01/01/2001', 'DD/MM/YYYY') AND TO_DATE('31/12/2019', 'DD/MM/YYYY');
 
-DROP VIEW IF EXISTS v_dist_menor_que_100;
+DROP VIEW IF EXISTS v_dist_menor_que_100  CASCADE;
 CREATE VIEW v_dist_menor_que_100 AS
 SELECT 
     c.nome AS nome_cliente,
@@ -66,7 +68,7 @@ WHERE ST_Distance(c.g_cliente, i.g_infantario) = (
     FROM Infantario i2
 );
 
-DROP VIEW IF EXISTS v_freguesia_lucrativa;
+DROP VIEW IF EXISTS v_freguesia_lucrativa CASCADE;
 CREATE VIEW v_freguesia_lucrativa AS --baseado no numero de clientes dos infantarios da freguesia 
 SELECT
     fi.nome AS freguesia_nome,
@@ -77,9 +79,9 @@ LEFT JOIN Cliente c ON i.nome = c.infantario
 LEFT JOIN Freguesia fi ON ST_Contains(fi.g_freguesia, i.g_infantario)
 GROUP BY fi.nome
 ORDER BY cliente_count DESC
-LIMIT 1
+LIMIT 1;
 
-DROP VIEW IF EXISTS v_cli_frg;
+DROP VIEW IF EXISTS v_cli_frg CASCADE;
 CREATE VIEW v_cli_frg AS
 SELECT
   DISTINCT c.nome || ' ' || c.apelido AS nome_cliente,
@@ -111,7 +113,7 @@ WHERE
 -- 7.b Adicione a vista v_inf_frg que apresenta os clientes que vivem numa freguesia mas estão mais perto de algum infantário de outra freguesia (diferente daquela onde vivem). 
 
 -- Distâncias entre todos os clientes e todos os infantarios, com os nomes das freguesias
-DROP VIEW IF EXISTS v_distancias ;
+DROP VIEW IF EXISTS v_distancias  CASCADE;
 
 CREATE VIEW v_distancias AS
 SELECT
@@ -128,7 +130,7 @@ LEFT JOIN Freguesia fc ON ST_Contains(fc.g_freguesia, c.g_cliente)
 LEFT JOIN Freguesia fi ON ST_Contains(fi.g_freguesia, i.g_infantario);
 
 -- view com o infantario mais proximo
-DROP VIEW IF EXISTS v_infantario_dists;
+DROP VIEW IF EXISTS v_infantario_dists  CASCADE;
 CREATE VIEW v_infantario_dists AS
 SELECT
     c.nome AS nome_cliente,
@@ -156,7 +158,7 @@ GROUP BY c.nome, c.id, i.nome, fc.nome, fi.nome, i.g_infantario;
 
 --7.b
 
-DROP VIEW IF EXISTS v_inf_frg;
+DROP VIEW IF EXISTS v_inf_frg  CASCADE;
 
 CREATE VIEW v_inf_frg AS
 SELECT * FROM v_infantario_dists AS vid
@@ -167,7 +169,7 @@ AND vid.freguesia_cliente != vid.freguesia_infantario;
 
 -- CREATE VIEW v_inf_frg( oid, nome_infantario, nome_freguesia_residencia, nome_freguesia_infantario, g_local_cliente )
 -- AS
-- SELECT ...
+-- SELECT ...
 ;
 
 
